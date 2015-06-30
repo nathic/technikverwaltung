@@ -1,0 +1,47 @@
+<div class="row">
+	<label>Search: <input ng-model="searchText"></label>
+		<input type="radio" ng-model="intern" ng-change="setIntern(true)" ng-value="true" />Intern
+		<input type="radio" ng-model="intern" ng-change="setIntern(false)" ng-value="false" />Extern
+	<table class="table table-striped table-fixed">
+		<thead>
+			<tr>
+			  <th class="col-xs-2">Gerät</th>
+			  <th class="col-xs-2">Art</th>
+			  <th class="col-xs-2">Marke</th>
+			  <th class="col-xs-2">Typ</th>
+			  <th class="col-xs-1">Stückzahl</th>
+			  <th class="col-xs-1">Preis</th>
+			  <th class="col-xs-1">Warenkorb</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="entry in entries | filter:searchText:false | orderBy:['geraet','art','marke','typ']">
+
+			 <td>
+				{{entry.geraet}}
+			 </td>
+			 <td>
+				{{entry.art}}
+			 </td>
+			 <td>
+				{{entry.marke}}
+			 </td>
+			 <td>
+				{{entry.typ}}
+			 </td>
+			 <td>
+				{{entry.stueckzahl}}
+			 </td>
+			 <td ng-show="intern">
+				{{entry.preisintern}}
+			 </td>
+			 <td ng-show="!intern">
+				{{entry.preisextern}}
+			 </td>
+			 <td>
+				<i class="glyphicon glyphicon-shopping-cart mouse-pointer" ng-click="addToCart(entry)"></i>
+			 </td>
+			</tr>
+		</tbody>
+	</table>
+</div>
