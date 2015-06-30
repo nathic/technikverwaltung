@@ -1,10 +1,15 @@
 angular.module('technik').controller('technicController', function($scope, $resource, $http){
-	//INITIALIZE ARRAYS
+	/////////////////////
+	//INITIALIZE ARRAYS//
+	/////////////////////
 	$scope.entries = [];
 	$scope.cart = [];
 	$scope.intern = true;
 	
-	//FETCH DATA FROM DRIVE
+	
+	/////////////////////////
+	//FETCH DATA FROM DRIVE//
+	/////////////////////////
 	var url = "https://spreadsheets.google.com/feeds/list/1JqBbDUAjUc5lVJb72IVYTbWsP9G3TxYysN76fYCZFrs/od6/public/values?alt=json";
     $http.get(url).
 		success(function(data) {
@@ -20,8 +25,11 @@ angular.module('technik').controller('technicController', function($scope, $reso
 	$scope.setIntern = function(newValue){
 		$scope.intern = newValue;
 	}	
-		
-	//CART
+	
+	
+	////////	
+	//CART//
+	////////
 	$scope.addToCart = function(entry){
 	    var idx = $scope.entries.indexOf(entry);
 		var add = true;
@@ -103,5 +111,42 @@ angular.module('technik').controller('technicController', function($scope, $reso
 	
 	$scope.roundIt = function(number){
 		return round(number);
+	}
+	
+	///////
+	//PDF//
+	///////
+	$scope.downloadPDF = function(){
+		generatePDF();
+	}
+	
+	function generatePDF(){
+		var doc = new jsPDF();
+		doc.setFontSize(18);
+		doc.text(15, 15, "Materialliste");
+		doc.line(15, 16, 49, 16);
+		var start = 22;
+		doc.setFontSize(12);
+		angular.forEach($scope.cart, function(entry){
+			if($scope.intern)
+			{
+				var text = entry.stueckzahl + "x "+entry.geraet+","+entry.marke+","+entry.typ+" à "+entry.preisintern+" Fr.";
+				doc.text(15, start, text);
+				doc.text(175, start, round(entry.stueckzahl*entry.preisintern)+" Fr.");
+			} else{
+				var text = entry.stueckzahl + "x "+entry.geraet+","+entry.marke+","+entry.typ+" à "+entry.preisextern+" Fr.";
+				doc.text(15, start, text);
+				doc.text(175, start, round(entry.stueckzahl*entry.preisextern)+" Fr.");
+			}
+			start +=6;
+		}); 
+		doc.line(175, (start-5), 190, (start-5));
+		if($scope.intern){
+			doc.text(175, start, $scope.getTotalIntern()+" Fr.");
+		} else{
+			doc.text(175, start, $scope.getTotalExtern()+" Fr.");
+		}
+		
+		doc.save("materialliste.pdf");
 	}
 });
