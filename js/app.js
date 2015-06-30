@@ -4,7 +4,15 @@ app.config(function($routeProvider){
 	$routeProvider
 		.when('/', 
 		{
-			templateUrl: 'partials/test.html'
+			templateUrl: 'partials/material.html'
+		})
+		.when('/material', 
+		{
+			templateUrl: 'partials/material.html'
+		})
+		.when('/cart', 
+		{
+			templateUrl: 'partials/cart.html'
 		})
 		.otherwise({redirectTo: '/'});
 });
